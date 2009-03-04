@@ -1,0 +1,29 @@
+
+= repim
+
+
+== Description
+
+
+== Installation
+
+=== Archive Installation
+
+	rake install
+
+=== Gem Installation
+
+	gem install repim
+
+
+== Features/Problems
+
+
+== Synopsis
+
+
+== Copyright
+
+Author::    moro <moro@>
+Copyright:: Copyright (c) 2009 moro
+License::   MIT
