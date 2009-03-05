@@ -1,0 +1,6 @@
+init.rb
+integration/sample-app/log/*
+integration/sample-app/db/*.sqlite3
+integration/sample-app/db/schema.rb
+integration/sample-app/vendor/plugins/open_id_authentication/*
+
