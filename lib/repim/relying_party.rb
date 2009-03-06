@@ -1,3 +1,5 @@
+require 'repim/ax_attributes_adapter'
+
 module Repim
   module RelyingParty
     def self.included(base)
@@ -38,7 +40,8 @@ module Repim
     end
 
     def destroy
-      logout_killing_session!
+      session[:user_id] = nil
+      reset_session
       flash[:notice] = "You have been logged out."
 
       redirect_back_or(after_logout_path)
@@ -67,8 +70,8 @@ module Repim
     end
 
     # log login faulure. and re-render sessions/new
-    def authenticate_failure(assigns=params)
-      flash[:error] = "Couldn't log you in as '#{assigns[:openid_url]}'"
+    def authenticate_failure(assigns = params)
+      flash[:error] = "Couldn't log you in as '#{assigns[:openid_url] || assigns["openid.claimed_id"]}'"
       logger.warn "Failed login for '#{assigns[:openid_url]}' from #{request.remote_ip} at #{Time.now.utc}"
 
       @openid_url  = assigns[:openid_url]
