@@ -34,6 +34,7 @@ describe SessionsController do
     it{ response.should redirect_to("/") }
     it{ session[:user_id].should == 12345 }
     it{ controller.current_user.should == @user }
+    it{ controller.should be_signed_in }
   end
 
   describe "authentication success but user not found then render users/new" do
@@ -52,6 +53,7 @@ describe SessionsController do
 
     it{ response.should render_template("users/new") }
     it{ controller.current_user.should be_nil }
+    it{ controller.should_not be_signed_in }
     it{ assigns[:user].should == @user }
   end
 
