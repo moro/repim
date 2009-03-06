@@ -4,6 +4,7 @@
 
 == Description
 
+Relying Party in minutes.
 
 == Installation
 
@@ -13,7 +14,7 @@
 
 === Gem Installation
 
-	gem install repim
+	gem install moro-repim
 
 
 == Features/Problems
@@ -24,6 +25,6 @@
 
 == Copyright
 
-Author::    moro <moro@>
-Copyright:: Copyright (c) 2009 moro
+Author::    MOROHASHI Kyosuke <moronatural@gmail.com>
+Copyright:: Copyright (c) 2009 MOROHASHI Kyosuke
 License::   MIT
