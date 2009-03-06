@@ -9,7 +9,8 @@ module Repim
 
     def current_user
       return nil if @__current_user__ == false
-      @__current_user__ ||= user_from_session || false
+      return @__current_user__ if @__current_user__
+      @__current_user__ ||= (user_from_session || false)
       current_user # call again
     end
 
