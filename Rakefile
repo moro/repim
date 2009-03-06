@@ -47,6 +47,20 @@ Spec::Rake::SpecTask.new(:spec) do |t|
   t.spec_files = FileList['spec/**/*_spec.rb']
 end
 
+namespace :spec do
+  desc "Run Sample app's tests"
+  task :sample_app do
+    Dir.chdir("integration/sample-app") do
+      unless File.directory?("./vendor/openid_authentication")
+        system(*%w[script/plugin install git://github.com/rails/open_id_authentication.git])
+      end
+      system($0, "spec")
+    end
+  end
+  desc "Run both plugin's and sample_app's"
+  task :all => %w[spec spec:sample_app]
+end
+
 spec = Gem::Specification.new do |s|
 	s.name              = NAME
 	s.version           = VERS
