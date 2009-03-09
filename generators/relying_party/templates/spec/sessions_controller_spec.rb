@@ -26,7 +26,7 @@ describe SessionsController do
       result.should_receive(:successful?).and_return true
 
       controller.should_receive(:root_path).and_return("/")
-      controller.should_receive(:authenticate_with_open_id).with(url, {:method => "get"}).and_yield(result,url, {})
+      controller.should_receive(:authenticate_with_open_id).with(url, {}).and_yield(result,url, {})
 
       post :create, :openid_url =>url
     end
@@ -46,7 +46,7 @@ describe SessionsController do
       result = mock("result")
       result.should_receive(:successful?).and_return true
 
-      controller.should_receive(:authenticate_with_open_id).with(url, {:method => "get"}).and_yield(result,url, {})
+      controller.should_receive(:authenticate_with_open_id).with(url, {}).and_yield(result,url, {})
 
       post :create, :openid_url =>url
     end
@@ -64,7 +64,7 @@ describe SessionsController do
       result = mock("result")
       result.should_receive(:successful?).and_return false
 
-      controller.should_receive(:authenticate_with_open_id).with(url, {:method => "get"}).and_yield(result,url, {})
+      controller.should_receive(:authenticate_with_open_id).with(url, {}).and_yield(result,url, {})
 
       post :create, :openid_url =>url
     end
