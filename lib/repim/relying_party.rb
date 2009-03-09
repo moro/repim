@@ -22,7 +22,7 @@ module Repim
     end
 
     def create
-      options = { :method => "get" }
+      options = {}
       options[attribute_adapter.necessity] = attribute_adapter.keys if attribute_adapter
 
       begin
@@ -33,7 +33,7 @@ module Repim
             authenticate_failure(params.merge(:openid_url=>identity_url))
           end
         end
-      rescue OpenID::Error => why
+      rescue OpenID::OpenIDError => why
         logger.debug{ [why.message, why.backtrace].flatten.join("\n\t") }
         authenticate_failure(params)
       end
