@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <%= stylesheet_link_tag "repim" %>
+    <%= javascript_include_tag :defaults %>
+  </head>
+  <body>
+    <div id="header">
+      <% if signed_in? -%>
+        <span class="current-user"> Logged in as <%= current_user.identity_url %> </span>
+      <% else -%>
+        <span class="sign-in"><%= link_to "Sign in", new_session_path %></span>
+      <% end -%>
+    </div>
+    <div id="content">
+      <%= yield %>
+    </div>
+  </body>
+</html>

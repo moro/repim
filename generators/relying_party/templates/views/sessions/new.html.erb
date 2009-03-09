@@ -1,0 +1,13 @@
+<h1>Welcome</h1>
+
+<div id="login-or-signup">
+  <p> Please login or signup using OpenID.</p>
+
+  <% form_tag sessions_path do -%>
+  <label for="openid_url">OpenID URL</label>
+  <%= text_field_tag "openid_url", params[:openid_url] %>
+
+  <%= submit_tag "Login or Signup" %>
+  <% end %>
+</div>
+
