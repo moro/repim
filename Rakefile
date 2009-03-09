@@ -51,10 +51,17 @@ namespace :spec do
   desc "Run Sample app's tests"
   task :sample_app do
     Dir.chdir("integration/sample-app") do
-      unless File.directory?("./vendor/openid_authentication")
+      unless File.directory?("./vendor/plugins/open_id_authentication")
         system(*%w[script/plugin install git://github.com/rails/open_id_authentication.git])
       end
-      system($0, "spec")
+      system("script/generate relying_party sessions")
+      begin
+        system($0, "db:migrate")
+        system($0, "spec")
+      ensure
+        system("script/destroy relying_party sessions")
+        FileUtils.rm_f(["db/development.sqlite3", "db/test.sqlite3"])
+      end
     end
   end
   desc "Run both plugin's and sample_app's"
