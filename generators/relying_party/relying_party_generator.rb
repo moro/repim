@@ -30,12 +30,13 @@ class RelyingPartyGenerator < Rails::Generator::NamedBase
 
     record do |m|
       m.file "sessions_controller.rb", "app/controllers/#{controller_file_name}.rb"
-      m.route_resources plural_name
+      assign_session_routing(singular_name, m)
 
       unless options[:skip_sessions_spec]
         m.directory "spec/controllers"
         m.file "spec/application_controller_spec.rb", "spec/controllers/application_controller_spec.rb"
         m.file "spec/sessions_controller_spec.rb", "spec/controllers/#{controller_file_name}_spec.rb"
+        m.file "spec/sessions_routing_spec.rb", "spec/controllers/#{plural_name}_routing_spec.rb"
       end
 
       m.dependency(care_rspec(options[:skip_user_scaffold] ? "model" : "scaffold"),
@@ -77,4 +78,27 @@ class RelyingPartyGenerator < Rails::Generator::NamedBase
   def using_rspec?
     File.directory?( File.expand_path("spec", RAILS_ROOT) )
   end
+
+  def assign_session_routing(name, manifest)
+    sentinel = 'ActionController::Routing::Routes.draw do |map|'
+
+    logger.route "map.resource #{name}"
+    route = <<EOS
+
+  map.signin  '/signin',  :controller => 'sessions', :action => 'new'
+  map.signout '/signout', :controller => 'sessions', :action => 'destroy'
+  map.resource :session
+EOS
+
+    unless options[:pretend]
+      if options[:command] == :create
+        manifest.gsub_file 'config/routes.rb', /(#{Regexp.escape(sentinel)})/mi do |match|
+          "#{match}#{route}"
+        end
+      else
+        manifest.gsub_file 'config/routes.rb', route, ''
+      end
+    end
+  end
+
 end
