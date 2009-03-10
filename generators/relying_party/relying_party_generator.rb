@@ -40,7 +40,7 @@ class RelyingPartyGenerator < Rails::Generator::NamedBase
       end
 
       generate_user_management(m, !options[:skip_sessions_spec]) unless options[:user_model_only]
-      m.dependency(care_rspec("model"), [user_klass_name, "identity_url:string", @user_cols].flatten.compact)
+      m.dependency(care_rspec("model"), [user_klass_name, "identity_url:string", @args].flatten.compact)
 
       # FIXME very veriy dirty
       # "sleep 3" is for changing timestamp of 'create_user' or 'open_id_authentication_tables'
