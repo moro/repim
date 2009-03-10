@@ -12,12 +12,10 @@ class RelyingPartyGenerator < Rails::Generator::NamedBase
   end
 
   def add_options!(opt)
-    opt.on("--skip-user-scaffold",
-           "Create user model with (rspec_)model generator. In default we user (rspec_)scaffold."){|v| options[:skip_user_scaffold] = true }
-
     opt.on("--skip-plugins-spec",
            "Do'nt copy application_controller_spec.rb and #{plural_name}_controller_spec.rb, default is #{!using_rspec?}"){|v| options[:skip_sessions_spec] = true }
-
+    opt.on("--user-management=generation_type",
+           "'model' for generate (rspec_)model, 'singnup' for controller using Repim::Signup. default is 'signup'"){|v| options[:user_model_only] = (v == "model") }
     opt.on("--openid-migration=migration_name",
            "Specify openid migration name, default is 'open_id_authentication_tables'. If value is 'none' generate nothing.") do |v|
       options[:openid_migration] = v
@@ -28,20 +26,39 @@ class RelyingPartyGenerator < Rails::Generator::NamedBase
     controller_file_name  = plural_name + "_controller"
     controller_class_name = controller_file_name.camelize
 
+    user_controller_name =  @user_klass_name.pluralize.underscore + "_controller"
+
     record do |m|
       m.file "sessions_controller.rb", "app/controllers/#{controller_file_name}.rb"
       assign_session_routing(singular_name, m)
 
+      m.directory "app/views/layouts"
+      m.file "views/layouts/sessions.html.erb", "app/views/layouts/#{plural_name}.html.erb"
+
+      m.directory "app/views/#{plural_name}"
+      m.file "views/sessions/new.html.erb", "app/views/#{plural_name}/new.html.erb"
+
+      %w[public/images/openid-login.gif public/stylesheets/repim.css].each do |asset|
+        m.directory File.dirname(asset)
+        m.file asset, asset
+      end
+
+      m.file("users_controller.rb", "app/controllers/#{user_controller_name}.rb") unless options[:user_model_only]
+
       unless options[:skip_sessions_spec]
         m.directory "spec/controllers"
         m.file "spec/application_controller_spec.rb", "spec/controllers/application_controller_spec.rb"
+
         m.file "spec/sessions_controller_spec.rb", "spec/controllers/#{controller_file_name}_spec.rb"
         m.file "spec/sessions_routing_spec.rb", "spec/controllers/#{plural_name}_routing_spec.rb"
+
+        unless options[:user_model_only]
+          m.file "spec/users_controller_spec.rb", "spec/controllers/#{user_controller_name}_spec.rb"
+          m.file "spec/users_routing_spec.rb", "spec/controllers/#{@user_klass_name.pluralize.underscore}_routing_spec.rb"
+        end
       end
 
-      m.dependency(care_rspec(options[:skip_user_scaffold] ? "model" : "scaffold"),
-                   [@user_klass_name, "identity_url:string", @user_cols].flatten.compact)
-
+      m.dependency(care_rspec("model"), [@user_klass_name, "identity_url:string", @user_cols].flatten.compact)
       # FIXME very veriy dirty
       # "sleep 3" is for changing timestamp of 'create_user' or 'open_id_authentication_tables'
       if options[:command] == :create
