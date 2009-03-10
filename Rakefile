@@ -48,24 +48,34 @@ Spec::Rake::SpecTask.new(:spec) do |t|
 end
 
 namespace :spec do
+  desc "Run both plugin's and sample_app's"
+  task :all => %w[spec spec:sample_app]
+
   desc "Run Sample app's tests"
   task :sample_app do
-    Dir.chdir("integration/sample-app") do
-      unless File.directory?("./vendor/plugins/open_id_authentication")
-        system(*%w[script/plugin install git://github.com/rails/open_id_authentication.git])
-      end
-      system("script/generate relying_party sessions")
-      begin
+    begin
+      Dir.chdir("integration/sample-app") do
+        unless File.directory?("./vendor/plugins/open_id_authentication")
+          system(*%w[script/plugin install git://github.com/rails/open_id_authentication.git])
+        end
+        system("script/generate relying_party sessions")
         system($0, "db:migrate")
         system($0, "spec")
-      ensure
+      end
+    ensure
+      Rake::Task["spec:sample_app:clean"].invoke
+    end
+  end
+
+  namespace :sample_app do
+    desc "Clean Sample app's generated datas"
+    task :clean do
+      Dir.chdir("integration/sample-app") do
         system("script/destroy relying_party sessions")
         FileUtils.rm_f(["db/development.sqlite3", "db/test.sqlite3"])
       end
     end
   end
-  desc "Run both plugin's and sample_app's"
-  task :all => %w[spec spec:sample_app]
 end
 
 spec = Gem::Specification.new do |s|
