@@ -43,22 +43,17 @@ class RelyingPartyGenerator < Rails::Generator::NamedBase
         m.file asset, asset
       end
 
-      m.file("users_controller.rb", "app/controllers/#{user_controller_name}.rb") unless options[:user_model_only]
-
       unless options[:skip_sessions_spec]
         m.directory "spec/controllers"
         m.file "spec/application_controller_spec.rb", "spec/controllers/application_controller_spec.rb"
 
         m.file "spec/sessions_controller_spec.rb", "spec/controllers/#{controller_file_name}_spec.rb"
         m.file "spec/sessions_routing_spec.rb", "spec/controllers/#{plural_name}_routing_spec.rb"
-
-        unless options[:user_model_only]
-          m.file "spec/users_controller_spec.rb", "spec/controllers/#{user_controller_name}_spec.rb"
-          m.file "spec/users_routing_spec.rb", "spec/controllers/#{@user_klass_name.pluralize.underscore}_routing_spec.rb"
-        end
       end
 
+      generate_user_management(m, !options[:skip_sessions_spec]) unless options[:user_model_only]
       m.dependency(care_rspec("model"), [@user_klass_name, "identity_url:string", @user_cols].flatten.compact)
+
       # FIXME very veriy dirty
       # "sleep 3" is for changing timestamp of 'create_user' or 'open_id_authentication_tables'
       if options[:command] == :create
@@ -84,16 +79,8 @@ class RelyingPartyGenerator < Rails::Generator::NamedBase
       detect{|c| File.exists?(File.expand_path(c, RAILS_ROOT)) }
   end
 
-  def user_model_exists?
-    File.exists?( File.expand_path(@user_klass_name + ".rb", RAILS_ROOT + "/app/models") )
-  end
-
   def care_rspec(base)
-     using_rspec? ? "rspec_#{base}" : base
-  end
-
-  def using_rspec?
-    File.directory?( File.expand_path("spec", RAILS_ROOT) )
+    File.directory?( File.expand_path("spec", RAILS_ROOT) ) ? "rspec_#{base}" : base
   end
 
   def assign_session_routing(name, manifest)
@@ -118,4 +105,13 @@ EOS
     end
   end
 
+  def generate_user_management(m, with_spec = true)
+    m.route_reouces :users
+    m.file("users_controller.rb", "app/controllers/#{user_controller_name}.rb")
+
+    if with_spec
+      m.file "spec/users_controller_spec.rb", "spec/controllers/#{user_controller_name}_spec.rb"
+      m.file "spec/users_routing_spec.rb", "spec/controllers/#{@user_klass_name.pluralize.underscore}_routing_spec.rb"
+    end
+  end
 end
