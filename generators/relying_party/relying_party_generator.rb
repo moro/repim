@@ -26,8 +26,6 @@ class RelyingPartyGenerator < Rails::Generator::NamedBase
     controller_file_name  = plural_name + "_controller"
     controller_class_name = controller_file_name.camelize
 
-    user_controller_name =  @user_klass_name.pluralize.underscore + "_controller"
-
     record do |m|
       m.file "sessions_controller.rb", "app/controllers/#{controller_file_name}.rb"
       assign_session_routing(singular_name, m)
@@ -79,9 +77,9 @@ class RelyingPartyGenerator < Rails::Generator::NamedBase
       detect{|c| File.exists?(File.expand_path(c, RAILS_ROOT)) }
   end
 
-  def care_rspec(base)
-    File.directory?( File.expand_path("spec", RAILS_ROOT) ) ? "rspec_#{base}" : base
-  end
+  def care_rspec(base); using_rspec? ? "rspec_#{base}" : base end
+
+  def using_rspec?; File.directory?( File.expand_path("spec", RAILS_ROOT) ) end
 
   def assign_session_routing(name, manifest)
     sentinel = 'ActionController::Routing::Routes.draw do |map|'
@@ -106,12 +104,15 @@ EOS
   end
 
   def generate_user_management(m, with_spec = true)
-    m.route_reouces :users
+    users = @user_klass_name.pluralize.underscore
+    user_controller_name =  users + "_controller"
+
+    m.route_resources users.to_sym
     m.file("users_controller.rb", "app/controllers/#{user_controller_name}.rb")
 
     if with_spec
       m.file "spec/users_controller_spec.rb", "spec/controllers/#{user_controller_name}_spec.rb"
-      m.file "spec/users_routing_spec.rb", "spec/controllers/#{@user_klass_name.pluralize.underscore}_routing_spec.rb"
+      m.file "spec/users_routing_spec.rb", "spec/controllers/#{users}_routing_spec.rb"
     end
   end
 end
