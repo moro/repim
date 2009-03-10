@@ -1,19 +1,9 @@
 class RelyingPartyGenerator < Rails::Generator::NamedBase
-  def initialize(runtime_args, runtime_options={})
-    super
-    user_name, user_cols = @args
-
-    if user_name
-      @user_klass_name = user_name.singularize.underscore
-      @user_cols = user_cols
-    else
-      @user_klass_name = "user"
-    end
-  end
-
   def add_options!(opt)
     opt.on("--skip-plugins-spec",
            "Do'nt copy application_controller_spec.rb and #{plural_name}_controller_spec.rb, default is #{!using_rspec?}"){|v| options[:skip_sessions_spec] = true }
+    opt.on("--user-class=klass",
+           "Specify User class name defailt is [User]"){|v| opt[:user_klass] = "User" }
     opt.on("--user-management=generation_type",
            "'model' for generate (rspec_)model, 'singnup' for controller using Repim::Signup. default is 'signup'"){|v| options[:user_model_only] = (v == "model") }
     opt.on("--openid-migration=migration_name",
@@ -50,7 +40,7 @@ class RelyingPartyGenerator < Rails::Generator::NamedBase
       end
 
       generate_user_management(m, !options[:skip_sessions_spec]) unless options[:user_model_only]
-      m.dependency(care_rspec("model"), [@user_klass_name, "identity_url:string", @user_cols].flatten.compact)
+      m.dependency(care_rspec("model"), [user_klass_name, "identity_url:string", @user_cols].flatten.compact)
 
       # FIXME very veriy dirty
       # "sleep 3" is for changing timestamp of 'create_user' or 'open_id_authentication_tables'
@@ -103,12 +93,18 @@ EOS
     end
   end
 
+  def user_klass_name
+    options[:user_klass] || "User"
+  end
   def generate_user_management(m, with_spec = true)
-    users = @user_klass_name.pluralize.underscore
+    users = user_klass_name.pluralize.underscore
     user_controller_name =  users + "_controller"
 
     m.route_resources users.to_sym
     m.file("users_controller.rb", "app/controllers/#{user_controller_name}.rb")
+
+    m.directory "app/views/#{users}"
+    m.template "views/users/new.html.erb", "app/views/#{users}/new.html.erb", :assigns => {:user => user_klass_name.underscore, :users => users}
 
     if with_spec
       m.file "spec/users_controller_spec.rb", "spec/controllers/#{user_controller_name}_spec.rb"

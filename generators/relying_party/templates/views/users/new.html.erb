@@ -1,0 +1,23 @@
+<h1>Sign up</h1>
+
+<%% form_for(@<%= user %>) do |f| %>
+  <%%= f.error_messages %>
+
+  <table>
+<% for attribute in attributes -%>
+    <tr>
+      <th> <%%= f.label :<%= attribute.name %> %></th>
+      <td><%%= f.<%= attribute.field_type %> :<%= attribute.name %> %></td>
+    </tr>
+<% end -%>
+    <tr>
+      <th>OpenID URL</th>
+      <td><%%=h session[:identity_url] %></td>
+    </tr>
+  </table>
+  <p>
+    <%%= f.submit 'Create' %>
+  </p>
+<%% end %>
+
+<%%= link_to 'Back', <%= users %>_path %>

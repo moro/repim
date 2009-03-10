@@ -3,7 +3,7 @@
 <div id="login-or-signup">
   <p> Please login or signup using OpenID.</p>
 
-  <% form_tag sessions_path do -%>
+  <% form_tag session_path do -%>
   <label for="openid_url">OpenID URL</label>
   <%= text_field_tag "openid_url", params[:openid_url] %>
 
