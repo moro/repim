@@ -81,5 +81,10 @@ module Repim
 
     def after_login_path; root_path ; end
     def after_logout_path; login_path ; end
+
+    def method_missing(m, *args, &b)
+      return [request.protocol, request.host_with_port, "/"].join if m.to_sym == :root_url
+      super
+    end
   end
 end
