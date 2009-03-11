@@ -6,6 +6,7 @@ module Repim
       base.user_klass = (User rescue nil) # assign nil when LoadError and/or ConstMissing
       base.login_template = "sessions/new"
 
+      base.before_filter :authenticate
       [:current_user, :signed_in?, :logged_in?].each do |method|
         base.helper_method method
         base.hide_action method

@@ -6,6 +6,7 @@ module Repim
       base.cattr_accessor :attribute_adapter
       base.cattr_accessor :signup_template
 
+      base.skip_before_filter :authenticate
       base.signup_template = "users/new"
 
       base.extend(ClassMethods)
@@ -85,6 +86,10 @@ module Repim
     def method_missing(m, *args, &b)
       return [request.protocol, request.host_with_port, "/"].join if m.to_sym == :root_url
       super
+    end
+
+    def verify_authenticity_token
+       super unless ('create' == params[:action] && '1' == params[:open_id_complete])
     end
   end
 end
