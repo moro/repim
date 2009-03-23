@@ -3,7 +3,7 @@ class RelyingPartyGenerator < Rails::Generator::NamedBase
     opt.on("--skip-plugins-spec",
            "Do'nt copy application_controller_spec.rb and #{plural_name}_controller_spec.rb, default is #{!using_rspec?}"){|v| options[:skip_sessions_spec] = true }
     opt.on("--user-class=klass",
-           "Specify User class name defailt is [User]"){|v| opt[:user_klass] = "User" }
+           "Specify User class name defailt is [User]"){|v| options[:user_klass] = "User" }
     opt.on("--user-management=generation_type",
            "'model' for generate (rspec_)model, 'singnup' for controller using Repim::Signup. default is 'signup'"){|v| options[:user_model_only] = (v == "model") }
     opt.on("--openid-migration=migration_name",
