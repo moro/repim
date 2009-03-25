@@ -11,7 +11,7 @@ require 'lib/repim'
 include FileUtils
 
 use_rubyforge = false
-NAME              = "repim"
+NAME              = ENV["GEMNAME"] || "repim"
 AUTHOR            = "MOROHASHI Kyosuke"
 EMAIL             = "moronatural@gmail.com"
 DESCRIPTION       = "Relying Party in minutes."
@@ -96,7 +96,7 @@ spec = Gem::Specification.new do |s|
 	s.require_path      = "lib"
 	s.test_files        = Dir["test/*_test.rb"]
 
-	#s.add_dependency('activesupport', '>=1.3.1')
+	s.add_dependency('moro-open_id_authentication')
 	#s.required_ruby_version = '>= 1.8.2'
 
 	s.files = %w(README.rdoc ChangeLog Rakefile) +
