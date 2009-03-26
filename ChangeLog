@@ -1,4 +1,8 @@
-== 0.1.4 / 2009-03-04
+== 0.1.5 / 2009-03-26
+* add gem dependency information as plugin.
+* remove unuse test from generator.
+
+== 0.1.4 / 2009-03-25
 * add dependency to open_id_authentication gems on http://github.com/moro/open_id_authentication
 
 == 0.1.3 / 2009-03-24
