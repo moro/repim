@@ -13,14 +13,6 @@ describe SessionsController do
     it "should map #show" do
       route_for(:controller => "sessions", :action => "show").should == "/session"
     end
-
-    it "should map #edit" do
-      route_for(:controller => "sessions", :action => "edit").should == "/session/edit"
-    end
-
-    it "should map #update" do
-      route_for(:controller => "sessions", :action => "update").should == "/session"
-    end
   end
 
   describe "route recognition" do
