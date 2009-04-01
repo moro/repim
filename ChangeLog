@@ -1,3 +1,6 @@
+== 0.1.6 / 2009-04-02
+* change default after_create_url to root_url
+
 == 0.1.5 / 2009-03-26
 * add gem dependency information as plugin.
 * remove unuse test from generator.
