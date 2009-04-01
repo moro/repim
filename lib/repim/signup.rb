@@ -22,7 +22,7 @@ module Repim
 
     private
     def after_create_url
-      current_user
+      root_url
     end
   end
 end

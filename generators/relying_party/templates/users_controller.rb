@@ -18,4 +18,10 @@ class UsersController < ApplicationController
       format.xml  { render :xml => @user }
     end
   end
+
+  # uncomment and edit this to change redirected url after signup.
+  # private
+  # def after_create_url
+  #   user_url(current_user)
+  # end
 end
