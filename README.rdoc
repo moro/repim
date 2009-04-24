@@ -1,10 +1,10 @@
 
 = repim
 
-
 == Description
 
-Relying Party in minutes.
+repim (RElying Party In Minutes) is a rails plugin to
+create websites using OpenID authentication easily.
 
 == Installation
 
@@ -22,6 +22,19 @@ Relying Party in minutes.
 
 == Synopsis
 
+Generate template files
+
+  $ ruby script/generate relying_party Sessions name:string display_name:string
+
+Edit config/environment.rb to load repim gem
+
+  config.gem 'moro-repim', :lib => 'repim', :source => 'http://gems.github.com/'
+
+Start server
+  
+  $ ruby script/server
+
+You will see the login form in http://localhost:3000/signin .
 
 == Copyright
 
