@@ -7,11 +7,11 @@ describe SessionsController do
     end
 
     it "should map #destroy -> /signout" do
-      route_for(:controller => "sessions", :action => "destroy").should == "/signout"
+      route_for(:controller => "sessions", :action => "destroy").should == {:path => "/signout", :method => "DELETE"}
     end
 
-    it "should map #show" do
-      route_for(:controller => "sessions", :action => "show").should == "/session"
+    it "should map #create" do
+      route_for(:controller => "sessions", :action => "create").should == {:path => "/session", :method => "POST"}
     end
   end
 

@@ -13,7 +13,7 @@ module Repim
           flash[:notice] = 'User was successfully created.'
           reset_session
           self.current_user = @user
-          format.html { redirect_to(after_create_url) }
+          format.html { redirect_to(after_create_url(@user)) }
         else
           format.html { render :action => "new" }
         end
@@ -21,8 +21,8 @@ module Repim
     end
 
     private
-    def after_create_url
-      root_url
+    def after_create_url(created)
+      respond_to?(:root_url) ? root_url : user_url(created)
     end
   end
 end

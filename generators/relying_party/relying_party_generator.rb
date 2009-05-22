@@ -34,9 +34,10 @@ class RelyingPartyGenerator < Rails::Generator::NamedBase
       unless options[:skip_sessions_spec]
         m.directory "spec/controllers"
         m.file "spec/application_controller_spec.rb", "spec/controllers/application_controller_spec.rb"
-
         m.file "spec/sessions_controller_spec.rb", "spec/controllers/#{controller_file_name}_spec.rb"
-        m.file "spec/sessions_routing_spec.rb", "spec/controllers/#{plural_name}_routing_spec.rb"
+
+        m.directory "spec/routing"
+        m.file "spec/sessions_routing_spec.rb", "spec/routing/#{plural_name}_routing_spec.rb"
       end
 
       generate_user_management(m, !options[:skip_sessions_spec]) unless options[:user_model_only]
@@ -108,7 +109,7 @@ EOS
 
     if with_spec
       m.file "spec/users_controller_spec.rb", "spec/controllers/#{user_controller_name}_spec.rb"
-      m.file "spec/users_routing_spec.rb", "spec/controllers/#{users}_routing_spec.rb"
+      m.file "spec/users_routing_spec.rb", "spec/routing/#{users}_routing_spec.rb"
     end
   end
 end

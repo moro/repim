@@ -15,6 +15,16 @@ describe SessionsController do
     response.should be_success
   end
 
+  def mock_out_authenticattion(controller, url, is_success)
+    result = mock("result")
+    result.should_receive(:successful?).and_return is_success
+
+    controller.
+      should_receive(:authenticate_with_open_id).
+      with(url, an_instance_of(Hash)).
+      and_return{|url, ax, block| block.call(result, url, ax) }
+  end
+
   describe "authentication success" do
     before do
       url = "---openid-url---"
@@ -22,11 +32,8 @@ describe SessionsController do
       @user = mock("user", :id => 12345)
       SessionsController.user_klass.should_receive(:find_by_identity_url).with(url).and_return(@user)
 
-      result = mock("result")
-      result.should_receive(:successful?).and_return true
-
       controller.should_receive(:root_path).and_return("/")
-      controller.should_receive(:authenticate_with_open_id).with(url, {}).and_yield(result,url, {})
+      mock_out_authenticattion(controller, url, true)
 
       post :create, :openid_url =>url
     end
@@ -43,10 +50,7 @@ describe SessionsController do
       SessionsController.user_klass.should_receive(:find_by_identity_url).with(url).and_return(nil)
       SessionsController.user_klass.should_receive(:new).with({}).and_return(@user = mock("user"))
 
-      result = mock("result")
-      result.should_receive(:successful?).and_return true
-
-      controller.should_receive(:authenticate_with_open_id).with(url, {}).and_yield(result,url, {})
+      mock_out_authenticattion(controller, url, true)
 
       post :create, :openid_url =>url
     end
@@ -61,10 +65,7 @@ describe SessionsController do
     before do
       url = "---openid-url---"
 
-      result = mock("result")
-      result.should_receive(:successful?).and_return false
-
-      controller.should_receive(:authenticate_with_open_id).with(url, {}).and_yield(result,url, {})
+      mock_out_authenticattion(controller, url, false)
 
       post :create, :openid_url =>url
     end

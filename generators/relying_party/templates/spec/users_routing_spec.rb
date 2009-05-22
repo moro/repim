@@ -3,27 +3,27 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe UsersController do
   describe "route generation" do
     it "should map #index" do
-      route_for(:controller => "users", :action => "index").should == "/users"
+      route_for(:controller => "users", :action => "index").should == {:path => "/users", :method => "GET"}
     end
   
     it "should map #new" do
-      route_for(:controller => "users", :action => "new").should == "/users/new"
+      route_for(:controller => "users", :action => "new").should == {:path => "/users/new", :method => "GET"}
     end
   
     it "should map #show" do
-      route_for(:controller => "users", :action => "show", :id => 1).should == "/users/1"
+      route_for(:controller => "users", :action => "show", :id => "1").should == {:path => "/users/1", :method => "GET"}
     end
   
     it "should map #edit" do
-      route_for(:controller => "users", :action => "edit", :id => 1).should == "/users/1/edit"
+      route_for(:controller => "users", :action => "edit", :id => "1").should == {:path => "/users/1/edit", :method => "GET"}
     end
   
     it "should map #update" do
-      route_for(:controller => "users", :action => "update", :id => 1).should == "/users/1"
+      route_for(:controller => "users", :action => "update", :id => "1").should == {:path => "/users/1", :method => "PUT"}
     end
   
     it "should map #destroy" do
-      route_for(:controller => "users", :action => "destroy", :id => 1).should == "/users/1"
+      route_for(:controller => "users", :action => "destroy", :id => "1").should == {:path => "/users/1", :method => "DELETE"}
     end
   end
 
