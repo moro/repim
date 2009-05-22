@@ -1,3 +1,7 @@
+== 0.1.7 / 2009-05-22
+* fix up old style rspec test (generator's)
+* add how to use. (patch from yhara)
+
 == 0.1.6 / 2009-04-02
 * change default after_create_url to root_url
 
